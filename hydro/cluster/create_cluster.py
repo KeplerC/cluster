@@ -140,8 +140,11 @@ def create_cluster(mem_count, ebs_count, func_count, sched_count, route_count,
         }]
     }]
 
-    ec2_client.authorize_security_group_ingress(GroupId=sg['GroupId'],
-                                                IpPermissions=permission)
+    try:
+        ec2_client.authorize_security_group_ingress(GroupId=sg['GroupId'],
+                                                    IpPermissions=permission)
+    except:
+        print("permission repeated")
 
     routing_svc_addr = util.get_service_address(client, 'routing-service')
     function_svc_addr = util.get_service_address(client, 'function-service')

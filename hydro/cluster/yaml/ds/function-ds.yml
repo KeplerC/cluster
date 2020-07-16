@@ -38,7 +38,7 @@ spec:
       hostIPC: true
       containers:
       - name: function-1
-        image: cgwu/mplambda
+        image: keplerc/mplambda
         imagePullPolicy: Always
         env:
         - name: ROUTE_ADDR
@@ -67,7 +67,7 @@ spec:
         - mountPath: /requests
           name: ipc
       - name: function-2
-        image: cgwu/mplambda
+        image: keplerc/mplambda
         imagePullPolicy: Always
         env:
         - name: ROUTE_ADDR
@@ -96,7 +96,7 @@ spec:
         - mountPath: /requests
           name: ipc
       - name: function-3
-        image: cgwu/mplambda
+        image: keplerc/mplambda
         imagePullPolicy: Always
         env:
         - name: ROUTE_ADDR

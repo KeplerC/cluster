@@ -51,7 +51,7 @@ RUN apt-get update
 RUN apt-get install -y python3.6
 RUN wget https://bootstrap.pypa.io/get-pip.py
 RUN python3.6 get-pip.py
-RUN pip3 install awscli cloudpickle zmq protobuf boto3 kubernetes six
+RUN pip3 install awscli cloudpickle zmq protobuf boto3 kubernetes six sortedcontainers
 
 # Download protobuf 3.5.1.
 RUN wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-all-3.5.1.zip
