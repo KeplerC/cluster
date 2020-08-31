@@ -43,10 +43,10 @@ spec:
         - name: ROLE
           value: scheduler
         - name: REPO_ORG
-          value: cw75
+          value: KeplerC
         - name: REPO_BRANCH
           value: TopK
         - name: ANNA_REPO_ORG
-          value: cw75
+          value: KeplerC
         - name: ANNA_REPO_BRANCH
           value: TopK

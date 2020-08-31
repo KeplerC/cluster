@@ -34,7 +34,7 @@ KOPS_STATE_STORE=$1
 SSH_KEY=$2
 
 echo "Creating cluster object..."
-kops create cluster --master-size c4.xlarge --zones us-east-1a --ssh-public-key ${SSH_KEY}.pub ${HYDRO_CLUSTER_NAME} --networking kube-router > /dev/null 2>&1
+kops create cluster --master-size c4.xlarge --zones us-west-2a --ssh-public-key ${SSH_KEY}.pub ${HYDRO_CLUSTER_NAME} --networking kube-router 2>&1
 # delete default instance group that we won't use
 kops delete ig nodes --name ${HYDRO_CLUSTER_NAME} --yes > /dev/null 2>&1
 
@@ -45,6 +45,6 @@ rm tmp.yml
 
 # create the cluster with just the routing instance group
 echo "Creating cluster on AWS..."
-kops update cluster --name ${HYDRO_CLUSTER_NAME} --yes > /dev/null 2>&1
+kops update cluster --name ${HYDRO_CLUSTER_NAME} --yes  2>&1
 
 ./validate_cluster.sh

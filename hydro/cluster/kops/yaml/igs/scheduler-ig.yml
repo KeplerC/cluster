@@ -28,4 +28,4 @@ spec:
   nodeLabels:
     role: scheduler
   subnets:
-    - us-east-1a
+    - us-west-2a

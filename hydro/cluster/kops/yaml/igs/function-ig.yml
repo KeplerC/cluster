@@ -28,4 +28,4 @@ spec:
   nodeLabels:
     role: function
   subnets:
-    - us-east-1a
+    - us-west-2a

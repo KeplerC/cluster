@@ -18,6 +18,6 @@ echo "Validating cluster..."
 kops validate cluster > /dev/null 2>&1
 while [ $? -ne 0 ]
 do
-  kops validate cluster 2>&1
+  kops validate cluster  --name ${HYDRO_CLUSTER_NAME}  2>&1
 done
 
