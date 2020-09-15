@@ -2,15 +2,19 @@ import time
 import struct
 import logging
 from cloudburst.client.client import CloudburstConnection
+import sys
+
 # change this every time the cluster restarts
-routing_elb = 'aee12d8103fb64019a1c9f26d44f18c9-776076244.us-west-2.elb.amazonaws.com'
-driver_node_ip = '3.16.55.37'
-function_elb = 'add5f07f9256d4121a87a81722e2cdd5-321829147.us-west-2.elb.amazonaws.com'
+routing_elb = 'a25e4964041aa4f3fa6fe9113918fef1-704792777.us-west-2.elb.amazonaws.com'
+driver_node_ip = '3.14.126.192'
+function_elb = 'ad46fffb615ae4f8a9d8c080214c8acb-1849264485.us-west-2.elb.amazonaws.com'
 
 dc = CloudburstConnection(function_elb, driver_node_ip) # function_elb, driver_node_ip
 
-time_limit = 30
-total_runs  = 80
+time_limit = 20
+total_runs  = 40
+number_of_k = sys.argv[1]
+print(number_of_k)
 
 #PATH_RVF = 0xb11b0c45
 #PATH_RVD = PATH_RVF + 0x100
@@ -55,7 +59,7 @@ def mpl_anna(cloudburst, anna_routing_address, execution_id, sequence_num): # fu
     #if not local_ip:
     #    return None, thread_id
     #execution_command = '/mplambda/build/mpl_lambda_pseudo --scenario se3 --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env se3/Twistycool_env.dae --robot se3/Twistycool_robot.dae --start 0,1,0,0,270,160,-200 --goal 0,1,0,0,270,160,-400 --min 53.46,-21.25,-476.86 --max 402.96,269.25,-91.0 --time-limit 60 --check-resolution 0.1 --anna_address ' + anna_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --thread_id ' + thread_id + ' 2>/logs'
-    execution_command = "sleep " + str((100-sequence_num) * 0.155) + " &&" + '/mplambda/build/mpl_lambda_pseudo --scenario fetch --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env AUTOLAB.dae --env-frame=0.38,-0.90,0.00,0,0,-$PI_2 --goal=-1.07,0.16,0.88,0,0,0 --goal-radius=0.01,0.01,0.01,0.01,0.01,$PI --start=0.1,$PI_2,$PI_2,0,$PI_2,0,$PI_2,0 --time-limit ' + str(time_limit) + ' --check-resolution 0.01 --anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --thread_id ' + thread_id + ' 2>/logs_{}_{}'.format(execution_id, str(time.time()))
+    execution_command = "sleep " + str((100-sequence_num) * 0.155) + " &&" + '/mplambda/build/mpl_lambda_pseudo --scenario fetch --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env AUTOLAB.dae --env-frame=0.38,-0.90,0.00,0,0,-$PI_2 --goal=-1.07,0.16,0.88,0,0,0 --goal-radius=0.01,0.01,0.01,0.01,0.01,$PI --start=0.1,$PI_2,$PI_2,0,$PI_2,0,$PI_2,0 --time-limit ' + str(time_limit) + ' --check-resolution 0.01 --anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --k ' + number_of_k + ' --thread_id ' + thread_id + ' 2>/logs_{}_{}'.format(execution_id, str(time.time()))
     print(execution_command)
     #execution_command = "echo hello world" + '-anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --thread_id ' + thread_id + ' >/logs'
     result = subprocess.run([execution_command], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
@@ -63,7 +67,7 @@ def mpl_anna(cloudburst, anna_routing_address, execution_id, sequence_num): # fu
     return result, thread_id
 
 
-cloud_func = dc.register(mpl_anna, 'mpl_anna4')
+cloud_func = dc.register(mpl_anna, 'mpl_anna4' + number_of_k)
 # wait for 1 second for the registration process to fully finish
 time.sleep(1)
 # f = open("result_" + str(time.time()) + ".txt", "w")
@@ -123,7 +127,7 @@ while run < total_runs:
 
     last_topK = []
     while True:
-        time.sleep(2)
+        #time.sleep(2)
         pl = dc.kvs_client.get(solution_key)[solution_key].payload
 
         key_list = []
@@ -138,7 +142,7 @@ while run < total_runs:
         if not new_result is None and new_result[0] < result[0]: # priority is proportional to path length. the lower the better
             # top K -> pick shortest 
             result = new_result
-            output = '%s, %s' % (time.time()-start, result[0])
+            output = '%s, %s' % (time.time()-start, result[0] % (10000)  )
             print(output)
             f.write(output + '\n')  # col1 time # col2 cost
             #print(result.priority)
