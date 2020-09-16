@@ -5,13 +5,13 @@ from cloudburst.client.client import CloudburstConnection
 import sys
 
 # change this every time the cluster restarts
-routing_elb = 'a25e4964041aa4f3fa6fe9113918fef1-704792777.us-west-2.elb.amazonaws.com'
-driver_node_ip = '3.14.126.192'
-function_elb = 'ad46fffb615ae4f8a9d8c080214c8acb-1849264485.us-west-2.elb.amazonaws.com'
+routing_elb = 'a4d272e8f35e14a5199125edada30d0a-398231145.us-west-2.elb.amazonaws.com'
+driver_node_ip = '18.217.126.9'
+function_elb = 'a5ade01dcba0740f28592dc22e9d3717-2049542327.us-west-2.elb.amazonaws.com'
 
 dc = CloudburstConnection(function_elb, driver_node_ip) # function_elb, driver_node_ip
 
-time_limit = 20
+time_limit = 30
 total_runs  = 40
 number_of_k = sys.argv[1]
 print(number_of_k)
@@ -58,8 +58,13 @@ def mpl_anna(cloudburst, anna_routing_address, execution_id, sequence_num): # fu
 
     #if not local_ip:
     #    return None, thread_id
-    #execution_command = '/mplambda/build/mpl_lambda_pseudo --scenario se3 --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env se3/Twistycool_env.dae --robot se3/Twistycool_robot.dae --start 0,1,0,0,270,160,-200 --goal 0,1,0,0,270,160,-400 --min 53.46,-21.25,-476.86 --max 402.96,269.25,-91.0 --time-limit 60 --check-resolution 0.1 --anna_address ' + anna_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --thread_id ' + thread_id + ' 2>/logs'
-    execution_command = "sleep " + str((100-sequence_num) * 0.155) + " &&" + '/mplambda/build/mpl_lambda_pseudo --scenario fetch --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env AUTOLAB.dae --env-frame=0.38,-0.90,0.00,0,0,-$PI_2 --goal=-1.07,0.16,0.88,0,0,0 --goal-radius=0.01,0.01,0.01,0.01,0.01,$PI --start=0.1,$PI_2,$PI_2,0,$PI_2,0,$PI_2,0 --time-limit ' + str(time_limit) + ' --check-resolution 0.01 --anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --k ' + number_of_k + ' --thread_id ' + thread_id + ' 2>/logs_{}_{}'.format(execution_id, str(time.time()))
+    #execution_command ="sleep " + str((100-sequence_num) * 0.155) + " &&" +  '/mplambda/build/mpl_lambda_pseudo --scenario se3 --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env se3/Twistycool_env.dae --robot se3/Twistycool_robot.dae --start 0,1,0,0,270,160,-200 --goal 0,1,0,0,270,160,-400 --min 53.46,-21.25,-476.86 --max 402.96,269.25,-91.0 --time-limit '  + str(time_limit) + ' --check-resolution 0.1 --anna_address ' + anna_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --k ' + number_of_k + ' --thread_id ' + thread_id + ' 2>/logs'
+    #execution_command = "sleep " + str((100-sequence_num) * 0.155) + " &&" + '/mplambda/build/mpl_lambda_pseudo --scenario fetch --algorithm cforest --coordinator "$COORDINATOR" --jobs 10 --env AUTOLAB.dae --env-frame=0.38,-0.90,0.00,0,0,-$PI_2 --goal=-1.07,0.16,0.88,0,0,0 --goal-radius=0.01,0.01,0.01,0.01,0.01,$PI --start=0.1,$PI_2,$PI_2,0,$PI_2,0,$PI_2,0 --time-limit ' + str(time_limit) + ' --check-resolution 0.01 --anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --k ' + number_of_k + ' --thread_id ' + thread_id + ' 2>/logs_{}_{}'.format(execution_id, str(time.time()))
+    #execution_command = "sleep " + str((100-sequence_num) * 0.155) + " &&" + '/mplambda/build/mpl_lambda_pseudo --scenario se3   --algorithm cforest --coordinator "$COORDINATOR" --jobs 10    --env se3/alpha_env-1.5.dae  --robot se3/alpha_robot.dae  --start 0,1,0,0,-21.91,-4.11,-14.14         --goal 0,1,0,0,-21.91,-4.11,68.86         --min -281.64,-119.64,-176.86         --max 189.05,189.18,174.86  --time-limit ' + str(time_limit) + ' --check-resolution 0.1 --anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --k ' + number_of_k + ' --thread_id ' + thread_id + ' 2>/logs_{}_{}'.format(execution_id, str(time.time()))
+    execution_command = "sleep " + str((100-sequence_num) * 0.155) + " &&" + '/mplambda/build/mpl_lambda_pseudo --scenario se3   --algorithm cforest --coordinator "$COORDINATOR" --jobs 10    --env se3/cubicles_env.dae         --robot se3/cubicles_robot.dae         --start 0,1,0,0,-4.96,-40.62,70.57         --goal 0,1,0,0,200.0,-40.62,70.57         --min -508.88,-230.13,-123.75         --max 319.62,531.87,101.0   --time-limit ' + str(time_limit) + ' --check-resolution 0.1 --anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --k ' + number_of_k + ' --thread_id ' + thread_id + ' 2>/logs_{}_{}'.format(execution_id, str(time.time()))
+
+
+    
     print(execution_command)
     #execution_command = "echo hello world" + '-anna_address ' + anna_routing_address + ' --local_ip ' + local_ip + ' --execution_id ' + execution_id + ' --thread_id ' + thread_id + ' >/logs'
     result = subprocess.run([execution_command], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
